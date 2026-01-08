@@ -1,0 +1,50 @@
+cat > ~/ros2_ws/src/handshake_pkg/handshake_pkg/vcu_node.py << 'EOF'
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import String
+import time
+
+class VCUNode(Node):
+    def __init__(self):
+        super().__init__('vcu_node')
+        
+        # Publisher to Ping AI
+        self.publisher = self.create_publisher(String, 'VCU2AI', 10)
+        
+        # Subscriber to listen for AI response
+        self.subscription = self.create_subscription(
+            String, 'AI2VCU', self.hear_ai, 10)
+        
+        # Timer to run the check every 1.0 second
+        self.timer = self.create_timer(1.0, self.check_system)
+        
+        self.last_seen_time = time.time()
+        self.get_logger().info("VCU Started. Monitoring AI status...")
+
+    def check_system(self):
+        # 1. Send Ping
+        msg = String()
+        msg.data = "Are you there?"
+        self.publisher.publish(msg)
+        
+        # 2. Check safety timeout
+        time_diff = time.time() - self.last_seen_time
+        
+        if time_diff > 3.0:
+            self.get_logger().error(f"CRITICAL: AI not responding for {time_diff:.1f} seconds!")
+        else:
+            self.get_logger().info("System Healthy: AI is connected.")
+
+    def hear_ai(self, msg):
+        if msg.data == "Yes, I am alive":
+            self.last_seen_time = time.time()
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = VCUNode()
+    rclpy.spin(node)
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
+EOF
