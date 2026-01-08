@@ -1,0 +1,25 @@
+Phase 3: Configure setup.py
+
+We must tell ROS 2 that these two scripts are executable programs.
+
+Open the setup.py file using:
+nano ~/ros2_ws/src/handshake_pkg/setup.py
+
+Find the entry_points section (it is usually at the bottom).
+
+Replace the console_scripts bracket [] with the following lines:
+Python
+
+'console_scripts': [
+    'vcu = handshake_pkg.vcu_node:main',
+    'ai = handshake_pkg.ai_node:main',
+],
+
+Save and Exit: Press Ctrl+O, Enter, then Ctrl+X.
+
+----------------------------------------------------------------
+
+Phase 4: Compilation
+
+cd ~/ros2_ws
+colcon build --packages-select handshake_pkg
