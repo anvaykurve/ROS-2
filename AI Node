@@ -1,0 +1,35 @@
+cat > ~/ros2_ws/src/handshake_pkg/handshake_pkg/ai_node.py << 'EOF'
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import String
+
+class AINode(Node):
+    def __init__(self):
+        super().__init__('ai_node')
+        
+        # Subscribe to VCU commands
+        self.subscription = self.create_subscription(
+            String, 'VCU2AI', self.hear_vcu, 10)
+            
+        # Publisher to reply to VCU
+        self.publisher = self.create_publisher(String, 'AI2VCU', 10)
+        
+        self.get_logger().info("AI Computer Started. Waiting for VCU...")
+
+    def hear_vcu(self, msg):
+        if msg.data == "Are you there?":
+            # Reply immediately
+            reply = String()
+            reply.data = "Yes, I am alive"
+            self.publisher.publish(reply)
+            self.get_logger().info("Received Ping. Replied: 'Yes, I am alive'")
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = AINode()
+    rclpy.spin(node)
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
+EOF
