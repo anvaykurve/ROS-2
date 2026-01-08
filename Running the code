@@ -1,0 +1,17 @@
+Terminal 1: Run the AI
+cd ~/ros2_ws
+source install/setup.bash
+ros2 run handshake_pkg ai
+
+Terminal 2: Run the VCU
+cd ~/ros2_ws
+source install/setup.bash
+ros2 run handshake_pkg vcu
+
+Output:
+
+If it doesn't run: Setup bash heforehand
+1. sudo apt update
+sudo apt install python3-colcon-common-extensions
+2. sudo apt update
+sudo apt install python3-colcon-common-extensions
