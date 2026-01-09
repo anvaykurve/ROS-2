@@ -10,7 +10,7 @@ ros2 run handshake_pkg vcu
 
 Output:
 
-If it doesn't run: Setup bash heforehand
+If it doesn't run: Setup bash beforehand
 1. sudo apt update
 sudo apt install python3-colcon-common-extensions
 2. sudo apt update
